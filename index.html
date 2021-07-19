@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <title>Food insecurity Sahel</title>
+    <meta name="description" content="">
+    <meta name="author" content="Julia Janicki">
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .tick text {
+            font-size: 9px;
+        }
+
+        #title {
+            margin-left: 46px;
+        }
+
+        .checkbox {
+            position: relative;
+            cursor: pointer;
+            appearance: none;
+            width: 80px;
+            height: 40px;
+            border-radius: 20px;
+            border: 2px solid #888888;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .checkbox::before {
+            content: "";
+            position: absolute;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background: #888888;
+            top: 3px;
+            left: 4px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .checkbox:checked::before {
+            transform: translateX(37px);
+            background: #007CE0;
+        }
+
+        .checkbox:checked {
+            border-color: #007CE0;
+            outline: none;
+        }
+
+        input:active,
+        input:focus {
+            outline: none !important;
+            -moz-outline-style: none !important;
+
+        }
+
+        .item {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        .itemWrapper {
+            margin-left: 36px;
+        }
+
+        text {
+            fill: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <h3 id="title">Number of food insecure people / percent population in the Sahel (2020)</h3>
+                <div class="itemWrapper">
+                    <div class="item">Number of people</div>
+                    <input id="click" type="checkbox" class="checkbox item" />
+                    <div class="item">Percent population</div>
+                </div>
+                <div id="chart"></div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.14.2/d3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="data.js"></script>
+
+
+    <script>
+
+
+        var width = 900;
+        var height = 550;
+        var margin = {
+            top: 40,
+            right: 20,
+            bottom: 40,
+            left: 100
+        };
+
+        var svg = d3.select("#chart").append("svg").attr("width", width).attr("height", height);
+
+        var categories = ["phase2people", "phase3people", "phase4people", "phase5people"]
+
+        var colorScale = d3.scaleOrdinal().domain(categories).range(["#FCE0DE", "#F7A29C", "#F2645A", "#C25048"])
+        var xScale = d3.scaleBand(data.map(d => d.country), [margin.left, width - margin.right]).padding(0.2);
+        var yScale = d3.scaleLinear([0, 40000000], [height - margin.bottom, margin.top])
+
+        var xAxis = d3.axisBottom(xScale).tickSizeOuter(0)
+        var yAxis = d3.axisLeft(yScale);
+
+        var stack = d3.stack().keys(categories)
+
+        // Pass our data to the stack to generate the layer positions
+        var chartData = stack(data)
+
+        var legendData = [{ "text": "Phase2", "color": "#FCE0DE" }, { "text": "Phase3", "color": "#F7A29C" }, { "text": "Phase4", "color": "#F2645A" }, { "text": "Phase5", "color": "#C25048" }]
+
+        var legend = svg.append("g").attr("class", "legend");
+
+        legend
+            .selectAll("rect")
+            .data(legendData)
+            .join("rect")
+            .attr("x", 120)
+            .attr("y", (d, i) => 60 + i * 30)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", d => d.color)
+
+        legend
+            .selectAll("text")
+            .data(legendData)
+            .join("text")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("transform", (d, i) => `translate(150,${75 + i * 30})`)
+            .attr("fill", "black")
+            .text(d => d.text)
+
+
+        var groups = svg.append('g').attr("class", "layer")
+            // Each layer of the stack goes in a group
+            // the group contains that layer for all countries
+            .selectAll('g')
+            .data(chartData)
+            .join('g')
+            // rects in the same layer will all have the same color, so we can put it on the group
+            // we can use the key on the layer's array to set the color
+            .style('fill', (d, i) => colorScale(d.key))
+
+        groups.selectAll('rect')
+            // Now we place the rects, which are the children of the layer array
+            .data(d => d)
+            .join('rect')
+            .attr('x', d => xScale(d.data.country))
+            .attr('y', d => yScale(d[1]))
+            .attr('height', d => yScale(d[0]) - yScale(d[1]))
+            .attr('width', xScale.bandwidth())
+
+        svg.append('g').attr("class", "x-axis")
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(xAxis)
+
+        svg.append('g').attr("class", "y-axis")
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(yAxis);
+
+
+        var people = true;
+
+        d3.select("#click").on("click", function () {
+            redraw();
+        })
+
+        function redraw() {
+            if (people) {
+                people = false; //percent = true
+                var categories = ["phase2percent", "phase3percent", "phase4percent", "phase5percent"]
+                var colorScale = d3.scaleOrdinal().domain(categories).range(["#FCE0DE", "#F7A29C", "#F2645A", "#C25048"])
+                var yScale = d3.scaleLinear([0, 100], [height - margin.bottom, margin.top])
+                var yAxis = d3.axisLeft(yScale);
+                var stack = d3.stack().keys(categories)
+                var chartData = stack(data)
+                console.log(chartData)
+                d3.select(".layer").selectAll('g').data(chartData).join('g').style('fill', (d, i) => colorScale(d.key))
+                groups.selectAll('rect')
+                    .data(d => d)
+                    .join('rect')
+                    .transition().duration(200)
+                    .attr('y', function (d) {
+                        console.log(d[1])
+                        return yScale(d[1])
+                    })
+                    .attr('height', d => yScale(d[0]) - yScale(d[1]))
+                d3.select(".y-axis").transition().duration(200).call(yAxis)
+
+            } else {
+                people = true;
+                var categories = ["phase2people", "phase3people", "phase4people", "phase5people"]
+                var colorScale = d3.scaleOrdinal().domain(categories).range(["#FCE0DE", "#F7A29C", "#F2645A", "#C25048"])
+                var yScale = d3.scaleLinear([0, 40000000], [height - margin.bottom, margin.top])
+                var yAxis = d3.axisLeft(yScale);
+                var stack = d3.stack().keys(categories)
+                var chartData = stack(data)
+                console.log(chartData)
+                d3.select(".layer").selectAll('g').data(chartData).join('g').style('fill', (d, i) => colorScale(d.key))
+                groups.selectAll('rect')
+                    .data(d => d)
+                    .join('rect')
+                    .transition().duration(200)
+                    .attr('y', d => yScale(d[1]))
+                    .attr('height', d => yScale(d[0]) - yScale(d[1]))
+                    .attr('width', xScale.bandwidth())
+                d3.select(".y-axis").transition().duration(200).call(yAxis)
+
+            }
+        }
+
+    </script>
+</body>
+
+</html>

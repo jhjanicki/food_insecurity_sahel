@@ -1,0 +1,80 @@
+var data = [
+  {
+    "country": "Burkina Faso",
+    "phase2percent": 24,
+    "phase2people": 5200000,
+    "phase3percent": 13,
+    "phase3people": 2800000,
+    "phase4percent": 2,
+    "phase4people": 500000,
+    "phase5percent": 0.1,
+    "phase5people": 11395,
+    "totalpeople": 8511395,
+    "totalpercent": 39.1
+  },
+  {
+    "country": "Cameroon",
+    "phase2percent": 24,
+    "phase2people": 6200000,
+    "phase3percent": 10,
+    "phase3people": 2600000,
+    "phase4percent": 0.4,
+    "phase4people": 100000,
+    "phase5percent": 0,
+    "phase5people": 0,
+    "totalpeople": 8900000,
+    "totalpercent": 34.4
+  },
+  {
+    "country": "Chad",
+    "phase2percent": 21,
+    "phase2people": 3100000,
+    "phase3percent": 6,
+    "phase3people": 900000,
+    "phase4percent": 1,
+    "phase4people": 100000,
+    "phase5percent": 0,
+    "phase5people": 0,
+    "totalpeople": 4100000,
+    "totalpercent": 28
+  },
+  {
+    "country": "Mali",
+    "phase2percent": 18,
+    "phase2people": 3700000,
+    "phase3percent": 6,
+    "phase3people": 1200000,
+    "phase4percent": 1,
+    "phase4people": 100000,
+    "phase5percent": 0,
+    "phase5people": 0,
+    "totalpeople": 5000000,
+    "totalpercent": 25
+  },
+  {
+    "country": "Niger",
+    "phase2percent": 23,
+    "phase2people": 5000000,
+    "phase3percent": 9,
+    "phase3people": 2000000,
+    "phase4percent": 0.3,
+    "phase4people": 60000,
+    "phase5percent": 0,
+    "phase5people": 0,
+    "totalpeople": 7060000,
+    "totalpercent": 32.3
+  },
+  {
+    "country": "Nigeria",
+    "phase2percent": 23,
+    "phase2people": 23900000,
+    "phase3percent": 8,
+    "phase3people": 8500000,
+    "phase4percent": 1,
+    "phase4people": 700000,
+    "phase5percent": 0,
+    "phase5people": 0,
+    "totalpeople": 33100000,
+    "totalpercent": 32
+  }
+]
