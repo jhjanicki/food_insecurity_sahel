@@ -12,16 +12,17 @@
         href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap"
         rel="stylesheet">
     <style>
+
         body {
             font-family: 'Source Sans Pro', sans-serif;
         }
 
-        .tick text {
-            font-size: 9px;
+        .container{
+            margin-top: 50px;
         }
 
-        #title {
-            margin-left: 46px;
+        .tick text {
+            font-size: 9px;
         }
 
         .checkbox {
@@ -34,9 +35,13 @@
             border: 2px solid #888888;
             outline: none;
             transition: 0.3s;
-        }
+            -webkit-transition: 0.3s;
+            -moz-transition: 0.3s;
+            -o-transition: 0.3s;
+            -ms-transition: 0.3s;
+            }
 
-        .checkbox::before {
+            .checkbox::before {
             content: "";
             position: absolute;
             height: 30px;
@@ -46,17 +51,17 @@
             top: 3px;
             left: 4px;
             transition: 0.3s ease-in-out;
-        }
+            }
 
-        .checkbox:checked::before {
+            .checkbox:checked::before {
             transform: translateX(37px);
-            background: #007CE0;
-        }
+            background: #5DBCB3;
+            }
 
-        .checkbox:checked {
-            border-color: #007CE0;
+            .checkbox:checked {
+            border-color: #5DBCB3;
             outline: none;
-        }
+            }
 
         input:active,
         input:focus {
@@ -85,9 +90,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <h3 id="title">Number / percent population of food insecure people in the Sahel (2020)</h3>
+            <div class="col-md-12">
                 <div class="itemWrapper">
                     <div class="item">Number of people</div>
                     <input id="click" type="checkbox" class="checkbox item" />
@@ -95,7 +98,6 @@
                 </div>
                 <div id="chart"></div>
             </div>
-            <div class="col-md-1"></div>
         </div>
     </div>
 
@@ -110,8 +112,20 @@
 
     <script>
 
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-        var width = 900;
+        $(window).resize(function () {
+        if (windowWidth != $(window).width() || windowHeight != $(window).height()) {
+            location.reload();
+            return;
+        }
+        });
+
+
+        var width = $("#chart").parent().width();;
         var height = 550;
         var margin = {
             top: 40,
